@@ -1,0 +1,70 @@
+const { urlencoded } = require('express')
+const express = require('express')
+const app = express()
+
+const level = require('../models/index').level
+app.use(express.urlencoded({ extended:true }))
+const verifyToken = require('./verifyToken')
+
+app.get('/', verifyToken, async (req, res) => {
+    level.findAll() // get data
+    .then(result => {
+        res.json(result)
+    })
+    .catch(error => {
+        res.json({
+            message: error.message
+        })
+    })
+})
+
+app.post('/', verifyToken, async (req, res) => {
+    let data = { nama_level: req.body.nama_level }
+    level.create(data)
+    .then(result => {
+        res.json({
+            message: 'Data inserted',
+            data: result
+        })
+    })
+    .catch(error => {
+        res.json({
+            message: error.message
+        })
+    })
+})
+
+app.put('/', verifyToken, async (req, res) => {
+    let param = { id_level: req.body.id_level }
+    let data = { nama_level: req.body.nama_level }
+    level.update(data,{where:param})
+    .then(result => {
+        res.json({
+            message: 'Data Updated',
+            data: result
+        })
+    })
+    .catch(error => {
+        res.json({
+            message: error.message
+        })
+    })
+})
+
+app.delete('/:id_level', verifyToken, async (req, res) => {
+    let param = { id_level: req.params.id_level }
+    level.destroy({where:param})
+    .then(result => {
+        res.json({
+            message: 'Data Destroyed',
+            data: result
+        })
+    })
+    .catch(error => {
+        res.json({
+            message: error.message
+        })
+    })
+})
+
+module.exports = app
