@@ -1,10 +1,16 @@
+// memanggil library
 const { urlencoded } = require('express')
 const express = require('express')
 const app = express()
 const md5 = require('md5')
 
+// memanggil model
 const admin = require('../models/index').admin
+
+// use app
 app.use(express.urlencoded({ extended:true }))
+
+// memanggil verifyToken agar bisa digunakan
 const verifyToken = require('./verifyToken')
 
 app.get('/', verifyToken, async (req,res) =>{
